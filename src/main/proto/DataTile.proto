@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package gov.nasa.jpl.nexus.ningester.protobuf;
+option java_package = "gov.nasa.jpl.nexus.ningester.protobuf";
+option java_multiple_files = true;
+
+service ProtoTileService {
+
+    rpc ToTile(stream TileSpecification) returns (stream Tile) {}
+    rpc ProcessTile(stream Tile) returns (stream Tile){}
+
+}
+
+message TileSpecification{
+
+    message Slice {
+        oneof name_or_position {
+            string dimension_name = 1;
+            int32 dimension_position = 2;
+        }
+        int64 start = 3;
+        int64 stop = 4;
+        int64 step = 5;
+    }
+
+    repeated Slice slices = 1;
+}
+
+message Tile{
+
+    string tile_id = 1;
+    TileSpecification section_spec = 2;
+    string dataset_name = 3;
+    string granule = 4;
+    string dataset_uuid = 5;
+    string variable_name = 6;
+    repeated string metadata_names = 7;
+
+    message BBox{
+        float lat_min = 1;
+        float lat_max = 2;
+        float lon_min = 3;
+        float lon_max = 4;
+    }
+    BBox bbox = 8;
+
+    message DataStats{
+        float min = 1;
+        float max = 2;
+        float mean = 3;
+        int64 count = 4;
+
+        int64 min_time = 5;
+        int64 max_time = 6;
+
+        float std_dev = 7;
+        float sum = 8;
+        float median = 9;
+        float variance = 10;
+        float skewness = 11;
+        float kurtosis = 12;
+    }
+    DataStats stats = 9;
+
+    bytes data = 10;
+}

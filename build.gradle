@@ -1,0 +1,122 @@
+import java.nio.file.*
+import java.nio.file.attribute.BasicFileAttributes
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.3'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+apply plugin: 'java'
+apply plugin: 'com.google.protobuf'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'project-report'
+
+
+group = 'gov.nasa.jpl.nexus.ningester'
+version = '1.0.0.RELEASE'
+
+ext {
+    genDirectory = "$projectDir/gen"
+    distDirectory = "$projectDir/distrobution"
+    pythonBuildDirPath = "${file(buildDir.path + '/python/ningesterproto').path}"
+}
+
+protobuf {
+
+    generatedFilesBaseDir = genDirectory
+
+    // Configure the protoc executable
+    protoc {
+        // Download from repositories
+        artifact = 'com.google.protobuf:protoc:3.4.0'
+    }
+
+    plugins {
+        // Define a plugin with name 'grpc'
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.7.0'
+        }
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                python {
+                    outputSubDir = 'python'
+                }
+            }
+        }
+    }
+
+}
+
+task writeNewPom {
+    doLast {
+        pom {}.writeTo(file(buildDir.path + "/poms/${project.name}-${project.version}.xml"))
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+assemble.doLast {
+    File pythonbuilddir = file(pythonBuildDirPath)
+
+    File pythonsource = file('src/main/python')
+
+    Files.walkFileTree(pythonsource.toPath(), new SimpleFileVisitor<Path>() {
+        @Override
+        public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+            Files.createDirectories(pythonbuilddir.toPath().resolve(pythonsource.toPath().relativize(dir)))
+            return FileVisitResult.CONTINUE
+        }
+
+        @Override
+        public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+            Files.copy(file, pythonbuilddir.toPath().resolve(pythonsource.toPath().relativize(file)), StandardCopyOption.REPLACE_EXISTING)
+            return FileVisitResult.CONTINUE
+        }
+    })
+
+    Files.move(file(pythonbuilddir.path + '/ningesterproto/setup.py').toPath(), file(pythonbuilddir.path + '/setup.py').toPath(), StandardCopyOption.REPLACE_EXISTING)
+
+    File generatedPython = file("$genDirectory/main/python/DataTile_pb2.py")
+
+    Files.copy(generatedPython.toPath(), file(pythonbuilddir.path + '/ningesterproto/DataTile_pb2.py').toPath(), StandardCopyOption.REPLACE_EXISTING)
+}
+
+task tarPython(type: Tar, dependsOn: [assemble]) {
+    destinationDir = file("distrobution")
+    archiveName = 'ningesterproto.tar.gz'
+    compression = Compression.GZIP
+    from(file(buildDir.path + '/python')) {
+        include '**/*'
+    }
+}
+
+clean.doLast {
+    file(genDirectory).deleteDir()
+    file(distDirectory).deleteDir()
+}
+
+dependencies {
+
+    compile 'com.google.protobuf:protobuf-java:3.4.0'
+
+}
