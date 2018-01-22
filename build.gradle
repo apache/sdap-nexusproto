@@ -1,35 +1,39 @@
+/*
+* Licensed to the Apache Software Foundation (ASF) under one or more
+* contributor license agreements.  See the NOTICE file distributed with
+* this work for additional information regarding copyright ownership.
+* The ASF licenses this file to You under the Apache License, Version 2.0
+* (the "License"); you may not use this file except in compliance with
+* the License.  You may obtain a copy of the License at
+*   http://www.apache.org/licenses/LICENSE-2.0
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.3'
-    }
+plugins {
+    id 'java'
+    id 'idea'
+    id 'com.google.protobuf' version '0.8.3'
+    id 'maven'
+    id 'maven-publish'
+    id 'project-report'
+    id 'net.researchgate.release' version '2.6.0'
 }
 
 repositories {
     mavenCentral()
 }
 
-
-apply plugin: 'java'
-apply plugin: 'com.google.protobuf'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'project-report'
-
-
-group = 'gov.nasa.jpl.nexus.ningester'
-version = '1.0.0.RELEASE'
-
 ext {
     genDirectory = "$projectDir/gen"
     distDirectory = "$projectDir/distrobution"
-    pythonBuildDirPath = "${file(buildDir.path + '/python/ningesterproto').path}"
+    pythonBuildDirPath = "${file(buildDir.path + '/python/nexusproto').path}"
 }
 
 protobuf {
@@ -45,7 +49,7 @@ protobuf {
     plugins {
         // Define a plugin with name 'grpc'
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.7.0'
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.9.0'
         }
     }
 
@@ -94,16 +98,29 @@ assemble.doLast {
         }
     })
 
-    Files.move(file(pythonbuilddir.path + '/ningesterproto/setup.py').toPath(), file(pythonbuilddir.path + '/setup.py').toPath(), StandardCopyOption.REPLACE_EXISTING)
+    def setupPy = file(pythonbuilddir.path + '/nexusproto/setup.py').text
+    setupPy = setupPy.replaceAll(/GRADLE_PROJECT_VERSION/, "$project.version")
+    file(pythonbuilddir.path + '/nexusproto/setup.py').write(setupPy)
+
+    Files.move(file(pythonbuilddir.path + '/nexusproto/setup.py').toPath(), file(pythonbuilddir.path + '/setup.py').toPath(), StandardCopyOption.REPLACE_EXISTING)
 
     File generatedPython = file("$genDirectory/main/python/DataTile_pb2.py")
 
-    Files.copy(generatedPython.toPath(), file(pythonbuilddir.path + '/ningesterproto/DataTile_pb2.py').toPath(), StandardCopyOption.REPLACE_EXISTING)
+    Files.copy(generatedPython.toPath(), file(pythonbuilddir.path + '/nexusproto/DataTile_pb2.py').toPath(), StandardCopyOption.REPLACE_EXISTING)
+}
+
+updateVersion.doLast {
+    File pythonbuilddir = file(pythonBuildDirPath)
+
+    def setupPy = file(pythonbuilddir.path + '/nexusproto/setup.py').text
+    setupPy = setupPy.replaceAll(/GRADLE_PROJECT_VERSION/, "$project.version")
+    file(pythonbuilddir.path + '/nexusproto/setup.py').write(setupPy)
+
 }
 
 task tarPython(type: Tar, dependsOn: [assemble]) {
     destinationDir = file("distrobution")
-    archiveName = 'ningesterproto.tar.gz'
+    archiveName = 'nexusproto.tar.gz'
     compression = Compression.GZIP
     from(file(buildDir.path + '/python')) {
         include '**/*'
