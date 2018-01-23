@@ -21,7 +21,7 @@ setup(
     version=__version__,
     url="https://github.com/apache/incubator-sdap-nexusproto",
 
-    author="Frank Greguska",
+    author="dev@sdap.apache.org",
 
     description="Protobufs used while ingesting NEXUS tiles.",
 
@@ -29,7 +29,7 @@ setup(
     platforms='any',
 
     install_requires=[
-        'protobuf'
+        'protobuf==3.2.0'
     ],
 
     classifiers=[

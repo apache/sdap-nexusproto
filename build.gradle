@@ -24,6 +24,7 @@ plugins {
     id 'maven-publish'
     id 'project-report'
     id 'net.researchgate.release' version '2.6.0'
+    id "io.spring.dependency-management" version "1.0.4.RELEASE"
 }
 
 group = "org.apache.sdap"
@@ -39,6 +40,12 @@ ext {
     genDirectory = "$projectDir/gen"
     distDirectory = "$projectDir/distrobution"
     pythonBuildDirPath = "${file(buildDir.path + '/python/nexusproto').path}"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.apache:apache:18'
+    }
 }
 
 protobuf {
