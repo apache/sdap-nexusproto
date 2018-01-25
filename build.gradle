@@ -27,10 +27,6 @@ plugins {
     id "io.spring.dependency-management" version "1.0.4.RELEASE"
 }
 
-group = "org.apache.sdap"
-version= "1.0.1-SNAPSHOT"
-sourceCompatibility = "1.8"
-
 repositories {
     mavenCentral()
     mavenLocal()
@@ -38,7 +34,7 @@ repositories {
 
 ext {
     genDirectory = "$projectDir/gen"
-    distDirectory = "$projectDir/distrobution"
+    distDirectory = "$projectDir/distribution"
     pythonBuildDirPath = "${file(buildDir.path + '/python/nexusproto').path}"
 }
 
@@ -110,9 +106,7 @@ assemble.doLast {
         }
     })
 
-    def setupPy = file(pythonbuilddir.path + '/nexusproto/setup.py').text
-    setupPy = setupPy.replaceAll(/GRADLE_PROJECT_VERSION/, "$project.version")
-    file(pythonbuilddir.path + '/nexusproto/setup.py').write(setupPy)
+    setVersionInPythonModule(pythonbuilddir)
 
     Files.move(file(pythonbuilddir.path + '/nexusproto/setup.py').toPath(), file(pythonbuilddir.path + '/setup.py').toPath(), StandardCopyOption.REPLACE_EXISTING)
 
@@ -122,20 +116,67 @@ assemble.doLast {
 }
 
 updateVersion.doLast {
-    File pythonbuilddir = file(pythonBuildDirPath)
+    setVersionInPythonModule(file(pythonBuildDirPath))
+}
 
-    def setupPy = file(pythonbuilddir.path + '/nexusproto/setup.py').text
-    setupPy = setupPy.replaceAll(/GRADLE_PROJECT_VERSION/, "$project.version")
-    file(pythonbuilddir.path + '/nexusproto/setup.py').write(setupPy)
+task checkPython {
+    checkPython.ext.python = null
+    checkPython.ext.pip = null
+    doLast {
+        def pythonExecutable = ['python', 'python3', 'python2.7'].find { python ->
+            try {
+                def check = "import sys; sys.exit(0 if sys.version_info >= (2,7) else 1)"
+                return [python, "-c", check].execute().waitFor() == 0
+            } catch (IOException ignored) {
+                return false
+            }
+        }
 
+        def pipExecutable = ['pip', 'pip3'].find { pip ->
+            try {
+                return [pip, "-v"].execute().waitFor() == 0
+            } catch (IOException ignored) {
+                return false
+            }
+        }
+
+        if (pythonExecutable == null || pipExecutable == null) {
+            throw new GradleException('Build requires Python and Pip.')
+        } else {
+            checkPython.ext.python = pythonExecutable
+            checkPython.ext.pip = pipExecutable
+        }
+    }
 }
 
 task tarPython(type: Tar, dependsOn: [assemble]) {
-    destinationDir = file("distrobution")
-    archiveName = 'nexusproto.tar.gz'
+    destinationDir = file(project.ext.distDirectory)
+    archiveName = "nexusproto-${project.version}.tar.gz"
     compression = Compression.GZIP
     from(file(buildDir.path + '/python')) {
         include '**/*'
+    }
+}
+
+task pythonInstall(dependsOn: [checkPython, tarPython]){
+    doLast {
+        def installed
+        def installCommand = [checkPython.ext.pip, 'install', tarPython.archivePath, '--force']
+        try{
+            def process = installCommand.execute()
+            process.waitFor()
+            logger.debug("Standard out from executing \"${installCommand.join(" ")}\"\n" + process.in.readLines().collect{line -> "  $line"}.join("\n"))
+            if(process.err.text) {
+                logger.error("Standard err from executing \"${installCommand.join(" ")}\"\n" + process.err.readLines().collect { line -> "  $line"}.join("\n"))
+            }
+            installed = process.exitValue() == 0
+        }catch (IOException e){
+            throw new GradleException("Failed to install", e)
+        }
+
+        if(!installed){
+            throw new GradleException("Failed to install ${tarPython.archivePath}")
+        }
     }
 }
 
@@ -148,4 +189,10 @@ dependencies {
 
     compile 'com.google.protobuf:protobuf-java:3.4.0'
 
+}
+
+void setVersionInPythonModule(pythonbuilddir){
+    def setupPy = file(pythonbuilddir.path + '/nexusproto/setup.py').text
+    setupPy = setupPy.replaceAll(/GRADLE_PROJECT_VERSION/, "$project.version")
+    file(pythonbuilddir.path + '/nexusproto/setup.py').write(setupPy)
 }
