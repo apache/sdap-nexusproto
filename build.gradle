@@ -166,8 +166,9 @@ task pythonInstall(dependsOn: [checkPython, tarPython]){
             def process = installCommand.execute()
             process.waitFor()
             logger.debug("Standard out from executing \"${installCommand.join(" ")}\"\n" + process.in.readLines().collect{line -> "  $line"}.join("\n"))
-            if(process.err.text) {
-                logger.error("Standard err from executing \"${installCommand.join(" ")}\"\n" + process.err.readLines().collect { line -> "  $line"}.join("\n"))
+            def stderrOut = process.err.text
+            if(stderrOut) {
+                logger.error("Standard err from executing \"${installCommand.join(" ")}\"\n" + stderrOut.split("\n").collect { line -> "  $line"}.join("\n"))
             }
             installed = process.exitValue() == 0
         }catch (IOException e){
