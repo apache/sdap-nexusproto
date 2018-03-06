@@ -50,7 +50,7 @@ message TimeSeriesTile{
     ShapedArray latitude = 1;
     ShapedArray longitude = 2;
 
-    int64 time = 3;
+    ShapedArray time = 3;
 
     ShapedArray variable_data = 4;
 
