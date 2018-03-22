@@ -7,17 +7,15 @@ pipeline{
     }
     stages{
         stage("Build"){
-            parallel {
-                stage("Build Java"){
-                    steps{
-                        git branch: "${env.BRANCH_NAME}", credentialsId: 'fgreg-github', url: 'https://github.com/apache/incubator-sdap-nexusproto'
-                    }
-                }
-                stage("Build Python"){
-                    steps{
-                        git branch: "${env.BRANCH_NAME}", credentialsId: 'fgreg-github', url: 'https://github.com/apache/incubator-sdap-nexusproto'
-                    }
-                }
+            steps{
+                git branch: "${env.BRANCH_NAME}", credentialsId: 'fgreg-github', url: 'https://github.com/apache/incubator-sdap-nexusproto'
+                sh './gradlew clean build'
+            }
+        }
+        stage("Assemble"){
+            steps{
+                sh './gradlew assemble'
+                archiveArtifacts artifacts: '**/nexusproto-*.jar **/nexusproto-*.tar.gz', fingerprint: true, onlyIfSuccessful: true
             }
         }
     }
