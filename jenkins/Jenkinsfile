@@ -4,6 +4,10 @@
 pipeline{
     agent {
         label 'trusty'
+        docker {
+            image 'maven:3-jdk-8'
+            args '-v $HOME/.m2:/root/.m2'
+        }
     }
     stages{
         stage("Build"){
@@ -15,7 +19,8 @@ pipeline{
         stage("Assemble"){
             steps{
                 sh './gradlew assemble'
-                archiveArtifacts artifacts: '**/nexusproto-*.jar **/nexusproto-*.tar.gz', fingerprint: true, onlyIfSuccessful: true
+                archiveArtifacts artifacts: 'build/libs/nexusproto-*.jar', fingerprint: true, onlyIfSuccessful: true
+                archiveArtifacts artifacts: 'distribution/nexusproto-*.tar.gz', fingerprint: true, onlyIfSuccessful: true
             }
         }
     }
