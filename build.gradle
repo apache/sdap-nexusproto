@@ -27,6 +27,10 @@ plugins {
     id "io.spring.dependency-management" version "1.0.4.RELEASE"
 }
 
+group=theGroup
+version=theVersion
+sourceCompatibility=theSourceCompatibility
+
 repositories {
     mavenCentral()
     mavenLocal()
