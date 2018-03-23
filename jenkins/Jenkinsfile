@@ -17,7 +17,7 @@ pipeline{
         }
         stage("Assemble"){
             steps{
-                sh './gradlew assemble'
+                sh './gradlew tarPython'
                 archiveArtifacts artifacts: 'build/libs/nexusproto-*.jar', fingerprint: true, onlyIfSuccessful: true
                 archiveArtifacts artifacts: 'distribution/nexusproto-*.tar.gz', fingerprint: true, onlyIfSuccessful: true
             }
