@@ -27,6 +27,10 @@ plugins {
     id "io.spring.dependency-management" version "1.0.4.RELEASE"
 }
 
+group=theGroup
+version=theVersion
+sourceCompatibility=theSourceCompatibility
+
 repositories {
     mavenCentral()
     mavenLocal()
@@ -106,9 +110,9 @@ assemble.doLast {
         }
     })
 
-    setVersionInPythonModule(pythonbuilddir)
-
     Files.move(file(pythonbuilddir.path + '/nexusproto/setup.py').toPath(), file(pythonbuilddir.path + '/setup.py').toPath(), StandardCopyOption.REPLACE_EXISTING)
+
+    setVersionInPythonModule(pythonbuilddir)
 
     File generatedPython = file("$genDirectory/main/python/DataTile_pb2.py")
 
@@ -151,10 +155,13 @@ task checkPython {
 
 task tarPython(type: Tar, dependsOn: [assemble]) {
     destinationDir = file(project.ext.distDirectory)
-    archiveName = "nexusproto-${project.version}.tar.gz"
+    archiveName = "${project.name}-${project.version}.tar.gz"
     compression = Compression.GZIP
     from(file(buildDir.path + '/python')) {
         include '**/*'
+    }
+    doLast {
+        setVersionInPythonModule(file(pythonBuildDirPath))
     }
 }
 
@@ -193,7 +200,7 @@ dependencies {
 }
 
 void setVersionInPythonModule(pythonbuilddir){
-    def setupPy = file(pythonbuilddir.path + '/nexusproto/setup.py').text
+    def setupPy = file(pythonbuilddir.path + '/setup.py').text
     setupPy = setupPy.replaceAll(/GRADLE_PROJECT_VERSION/, "$project.version")
-    file(pythonbuilddir.path + '/nexusproto/setup.py').write(setupPy)
+    file(pythonbuilddir.path + '/setup.py').write(setupPy)
 }

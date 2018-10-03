@@ -1,0 +1,30 @@
+#!groovy
+
+
+pipeline{
+    agent {
+        docker {
+            image 'maven:3-jdk-8'
+            args '-v $HOME/.m2:/root/.m2'
+        }
+    }
+    stages{
+        stage("Build"){
+            steps{
+                git branch: "${env.BRANCH_NAME}", credentialsId: 'fgreg-github', url: 'https://github.com/apache/incubator-sdap-nexusproto'
+                sh './gradlew clean build'
+            }
+        }
+        stage("Assemble"){
+            steps{
+                sh './gradlew tarPython'
+            }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true, onlyIfSuccessful: true
+            archiveArtifacts artifacts: 'distribution/*.tar.gz', fingerprint: true, onlyIfSuccessful: true
+        }
+    }
+}
