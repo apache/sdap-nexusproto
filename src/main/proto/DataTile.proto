@@ -19,6 +19,25 @@ package org.apache.sdap.nexusproto;
 option java_package = "org.apache.sdap.nexusproto";
 option java_multiple_files = true;
 
+message EccoTile{
+
+    ShapedArray latitude = 1;
+    ShapedArray longitude = 2;
+
+    int64 time = 3;
+
+    ShapedArray variable_data = 4;
+
+    repeated MetaData meta_data = 5;
+
+    ShapedArray depth = 6;
+
+    string grid = 7;
+    ShapedArray secondary_data = 8;
+    repeated ShapedArray geometry = 9;
+    ShapedArray tile = 10;
+
+}
 
 message GridTile{
 
@@ -31,6 +50,12 @@ message GridTile{
 
     repeated MetaData meta_data = 5;
 
+    ShapedArray depth = 6;
+
+    string grid = 7;
+    ShapedArray secondary_data = 8;
+    repeated ShapedArray geometry = 9;
+
 }
 
 message SwathTile{
@@ -42,6 +67,12 @@ message SwathTile{
     ShapedArray variable_data = 4;
 
     repeated MetaData meta_data = 5;
+
+    ShapedArray depth = 6;
+
+    string grid = 7;
+    ShapedArray secondary_data = 8;
+    repeated ShapedArray geometry = 9;
 
 }
 
@@ -56,6 +87,11 @@ message TimeSeriesTile{
 
     repeated MetaData meta_data = 5;
 
+    ShapedArray depth = 6;
+
+    string grid = 7;
+    ShapedArray secondary_data = 8;
+    repeated ShapedArray geometry = 9;
 }
 
 message MetaData{
@@ -107,6 +143,7 @@ message TileSummary{
         float variance = 10;
         float skewness = 11;
         float kurtosis = 12;
+
     }
     DataStats stats = 9;
 }
@@ -123,5 +160,6 @@ message TileData{
         GridTile grid_tile = 2;
         SwathTile swath_tile = 3;
         TimeSeriesTile time_series_tile = 4;
+        EccoTile ecco_tile = 5;
     }
 }
