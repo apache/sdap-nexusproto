@@ -30,12 +30,9 @@ message EccoTile{
 
     repeated MetaData meta_data = 5;
 
-    ShapedArray depth = 6;
+    int64 depth = 6;
 
-    string grid = 7;
-    ShapedArray secondary_data = 8;
-    repeated ShapedArray geometry = 9;
-    ShapedArray tile = 10;
+    int64 tile = 7;
 
 }
 
@@ -50,11 +47,7 @@ message GridTile{
 
     repeated MetaData meta_data = 5;
 
-    ShapedArray depth = 6;
-
-    string grid = 7;
-    ShapedArray secondary_data = 8;
-    repeated ShapedArray geometry = 9;
+    int64 depth = 6;
 
 }
 
@@ -68,11 +61,7 @@ message SwathTile{
 
     repeated MetaData meta_data = 5;
 
-    ShapedArray depth = 6;
-
-    string grid = 7;
-    ShapedArray secondary_data = 8;
-    repeated ShapedArray geometry = 9;
+    int64 depth = 6;
 
 }
 
@@ -87,11 +76,7 @@ message TimeSeriesTile{
 
     repeated MetaData meta_data = 5;
 
-    ShapedArray depth = 6;
-
-    string grid = 7;
-    ShapedArray secondary_data = 8;
-    repeated ShapedArray geometry = 9;
+    int64 depth = 6;
 }
 
 message MetaData{
