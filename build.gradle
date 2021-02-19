@@ -19,7 +19,7 @@ import java.nio.file.attribute.BasicFileAttributes
 plugins {
     id 'java'
     id 'idea'
-    id 'com.google.protobuf' version '0.8.3'
+    id 'com.google.protobuf' version '0.8.13'
     id 'maven'
     id 'maven-publish'
     id 'project-report'
@@ -195,7 +195,7 @@ clean.doLast {
 
 dependencies {
 
-    compile 'com.google.protobuf:protobuf-java:3.4.0'
+    compile 'com.google.protobuf:protobuf-java:3.14.0'
 
 }
 
