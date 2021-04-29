@@ -131,6 +131,7 @@ message TileSummary{
 
     }
     DataStats stats = 9;
+    string standard_name = 10;
 }
 
 message NexusTile{
