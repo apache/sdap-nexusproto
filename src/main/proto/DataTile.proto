@@ -102,7 +102,7 @@ message TileSummary{
     string dataset_name = 3;
     string granule = 4;
     string dataset_uuid = 5;
-    string data_var_name = 6;
+    repeated string data_var_name = 6;
     repeated Attribute global_attributes = 7;
 
     message BBox{
