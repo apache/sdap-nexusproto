@@ -51,7 +51,36 @@ message GridTile{
 
 }
 
+message GridMultiBandTile{
+
+    ShapedArray latitude = 1;
+    ShapedArray longitude = 2;
+
+    int64 time = 3;
+
+    ShapedArray variable_data = 4;
+
+    repeated MetaData meta_data = 5;
+
+    float depth = 6;
+
+}
+
 message SwathTile{
+
+    ShapedArray latitude = 1;
+    ShapedArray longitude = 2;
+    ShapedArray time = 3;
+
+    ShapedArray variable_data = 4;
+
+    repeated MetaData meta_data = 5;
+
+    float depth = 6;
+
+}
+
+message SwathMultiBandTile{
 
     ShapedArray latitude = 1;
     ShapedArray longitude = 2;
@@ -132,6 +161,7 @@ message TileSummary{
     }
     DataStats stats = 9;
     string standard_name = 10;
+    repeated string data_dim_names = 11;
 }
 
 message NexusTile{
@@ -147,5 +177,7 @@ message TileData{
         SwathTile swath_tile = 3;
         TimeSeriesTile time_series_tile = 4;
         EccoTile ecco_tile = 5;
+        GridMultiBandTile grid_multi_band_tile = 6;
+        SwathMultiBandTile swath_multi_band_tile = 7;
     }
 }
