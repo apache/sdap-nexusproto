@@ -51,7 +51,7 @@ message GridTile{
 
 }
 
-message GridMultiBandTile{
+message GridMultiVariableTile{
 
     ShapedArray latitude = 1;
     ShapedArray longitude = 2;
@@ -80,7 +80,7 @@ message SwathTile{
 
 }
 
-message SwathMultiBandTile{
+message SwathMultiVariableTile{
 
     ShapedArray latitude = 1;
     ShapedArray longitude = 2;
@@ -177,7 +177,7 @@ message TileData{
         SwathTile swath_tile = 3;
         TimeSeriesTile time_series_tile = 4;
         EccoTile ecco_tile = 5;
-        GridMultiBandTile grid_multi_band_tile = 6;
-        SwathMultiBandTile swath_multi_band_tile = 7;
+        GridMultiVariableTile grid_multi_variable_tile = 6;
+        SwathMultiVariableTile swath_multi_variable_tile = 7;
     }
 }
