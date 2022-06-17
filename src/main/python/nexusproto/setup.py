@@ -29,7 +29,7 @@ setup(
     platforms='any',
 
     install_requires=[
-        'protobuf==3.2.0'
+        'protobuf==3.15.0'
     ],
 
     classifiers=[
