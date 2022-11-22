@@ -33,7 +33,7 @@ setup(
     ],
 
     classifiers=[
-        'Development Status :: 1 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3.5',
