@@ -47,7 +47,8 @@ message GridTile{
 
     repeated MetaData meta_data = 5;
 
-    float depth = 6;
+    float min_depth = 6;
+    float max_depth = 7;
 
 }
 
@@ -62,7 +63,8 @@ message GridMultiVariableTile{
 
     repeated MetaData meta_data = 5;
 
-    float depth = 6;
+    float min_depth = 6;
+    float max_depth = 7;
 
 }
 
@@ -76,7 +78,8 @@ message SwathTile{
 
     repeated MetaData meta_data = 5;
 
-    float depth = 6;
+    float min_depth = 6;
+    float max_depth = 7;
 
 }
 
@@ -90,7 +93,8 @@ message SwathMultiVariableTile{
 
     repeated MetaData meta_data = 5;
 
-    float depth = 6;
+    float min_depth = 6;
+    float max_depth = 7;
 
 }
 
