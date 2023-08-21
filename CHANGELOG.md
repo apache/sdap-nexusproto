@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Added
+- SDAP-483: Added `.asf.yaml` to configure Jira auto-linking.
 ### Changed
 - SDAP-469: Changed tile depth fields to reflect a range of depths for a given tile (min & max).
 ### Deprecated
