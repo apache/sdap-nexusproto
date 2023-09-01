@@ -50,6 +50,7 @@ message GridTile{
     float min_depth = 6;
     float max_depth = 7;
 
+    ShapedArray elevation = 8;
 }
 
 message GridMultiVariableTile{
@@ -66,6 +67,7 @@ message GridMultiVariableTile{
     float min_depth = 6;
     float max_depth = 7;
 
+    ShapedArray elevation = 8;
 }
 
 message SwathTile{
@@ -81,6 +83,7 @@ message SwathTile{
     float min_depth = 6;
     float max_depth = 7;
 
+    ShapedArray elevation = 8;
 }
 
 message SwathMultiVariableTile{
@@ -96,6 +99,7 @@ message SwathMultiVariableTile{
     float min_depth = 6;
     float max_depth = 7;
 
+    ShapedArray elevation = 8;
 }
 
 message TimeSeriesTile{
