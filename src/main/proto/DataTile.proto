@@ -47,8 +47,8 @@ message GridTile{
 
     repeated MetaData meta_data = 5;
 
-    float min_depth = 6;
-    float max_depth = 7;
+    float min_elevation = 6;
+    float max_elevation = 7;
 
     ShapedArray elevation = 8;
 }
@@ -64,8 +64,8 @@ message GridMultiVariableTile{
 
     repeated MetaData meta_data = 5;
 
-    float min_depth = 6;
-    float max_depth = 7;
+    float min_elevation = 6;
+    float max_elevation = 7;
 
     ShapedArray elevation = 8;
 }
@@ -80,8 +80,8 @@ message SwathTile{
 
     repeated MetaData meta_data = 5;
 
-    float min_depth = 6;
-    float max_depth = 7;
+    float min_elevation = 6;
+    float max_elevation = 7;
 
     ShapedArray elevation = 8;
 }
@@ -96,8 +96,8 @@ message SwathMultiVariableTile{
 
     repeated MetaData meta_data = 5;
 
-    float min_depth = 6;
-    float max_depth = 7;
+    float min_elevation = 6;
+    float max_elevation = 7;
 
     ShapedArray elevation = 8;
 }
