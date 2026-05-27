@@ -19,7 +19,7 @@ __version__ = 'GRADLE_PROJECT_VERSION'
 setup(
     name='nexusproto',
     version=__version__,
-    url="https://github.com/apache/incubator-sdap-nexusproto",
+    url="https://github.com/apache/sdap-nexusproto",
 
     author="dev@sdap.apache.org",
 
@@ -29,7 +29,7 @@ setup(
     platforms='any',
 
     install_requires=[
-        'protobuf==3.2.0'
+        'protobuf==3.20.0'
     ],
 
     classifiers=[
